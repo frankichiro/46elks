@@ -29,12 +29,14 @@ const Index = new class {
 		this.#elements.about.addEventListener('click',this,false);
 		this.#elements.close.addEventListener('click',this,false);
 		this.#elements.admin.addEventListener('click',this,false);
-		this.setup();
 	}
-	handleEvent(event) {
+	async handleEvent(event) {
 		switch (event.type) {
 			case 'open':
 				console.log('Connected to Realtime SMS Stream');
+				const response = await fetch('letters.json');
+				this.#letters = await response.json();
+				this.loadMessages();
 				break;
 			case 'message':
 				this.receiveFromSocket(event.data);
@@ -43,8 +45,7 @@ const Index = new class {
 				console.error('WebSocket error:',event);
 				break;
 			case 'close':
-				console.log('Connection lost');
-				//optional auto-reconnect logic could go here
+				console.log('Connection lost'); //auto-reconnect?
 				break;
 			case 'click':
 				switch (event.target) {
@@ -56,20 +57,16 @@ const Index = new class {
 						break;
 					case this.#elements.admin:
 						event.preventDefault();
-						console.log(event.target.form);
+						const value = JSON.parse(event.target.form.elements.data.value);
+						this.sendToSocket(value);
 						break;
 				}
 		}
 	}
-	async setup() {
-		const response = await fetch('letters.json');
-		this.#letters = await response.json();
-		this.loadMessages();
-	}
 	loadMessages() {
 		const message = {
 			action: 'load',
-			limit: 3
+			limit: 5
 		};
 		this.sendToSocket(message);
 	}
@@ -84,18 +81,23 @@ const Index = new class {
 	receiveFromSocket(object) {
 		object = JSON.parse(object);
 		switch (object.action) {
-			case 'added':
-				console.log('New message!');
+			case 'add':
+				console.log('New message!',object.data.message);
+				this.loadMessages();
+				break;
+			case 'remove':
+				console.log('Message removed.',object.data.id);
+				this.loadMessages();
+				break;
 			case 'loaded':
 				let text = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖ!?,.-_@#/:+0123456789 ';
 				if (object.data.length > 0) {
-					console.log(object);
+					const messages = [];
+					for (const entry of object.data) {
+						messages.push(entry.message);
+					}
+					text = '      '+messages.join('      ');
 				}
-
-				/*const text = '      '+[
-					'Det här är på Svenska för test.',
-					'The quick brown fox jumps over the lazy dog.'
-				].join('      ');*/
 				this.#lineArrays = this.textToLines(text);
 				this.drawLetters();
 				this.animate();
@@ -177,7 +179,6 @@ const Index = new class {
 		}
 
 	}
-
 	animate() {
 
 		const canvas = this.#elements.canvas;

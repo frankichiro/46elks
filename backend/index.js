@@ -46,10 +46,14 @@ export class MyDurableObject extends DurableObject {
     }
 	async addMessage(request) {
 		try {
-			const formData = await request.formData();
-			const input = {};
-			const extract = key => input[key] = formData.get(key);
-			Object.keys(formData).forEach(extract);
+			const contentType = request.headers.get('content-type');
+			const urlencoded = contentType && contentType.includes('application/x-www-form-urlencoded');
+			if (!urlencoded) {
+				throw new ResponseError(500,'Expected form data');
+			}
+			const text = await request.text();
+			const params = new URLSearchParams(text);
+			const input = Object.fromEntries(params);
 			const {
 				id,				// The unique id of the message in our systems.
 				from: sender,	// The sender of the SMS.
@@ -59,23 +63,31 @@ export class MyDurableObject extends DurableObject {
 				created			// The time in UTC when the SMS object was created in our systems.
 			} = input;
 			let query,statement;
-			if (message.match(/DELETE [a-z1-9]{33}/)) {
+			if (message.match(/DELETE [a-z0-9]{33}/i)) {
 				const existingID = message.split(' ')[1];
 				query = 'UPDATE messages SET show = 0 WHERE id = ?';
-				statement = await this.ctx.storage.sql.exec(query,existingID);
-				await statement.run();
-				this.broadcast('remove',{});
+				await this.ctx.storage.sql.exec(query,existingID);
+				this.broadcast('remove',{id:existingID});
 				return new ResponseSuccess('Message removed!');
 			} else {
-				query = 'INSERT INTO messages (id,sender,recipient,message,created,show) VALUES (?,?,?,?,?,1)';
-				statement = await this.ctx.storage.sql.exec(query,id,sender,recipient,message,created);
-				await statement.run();
-				const object = {id,sender,recipient,message,created};
-				this.broadcast('add',object);
-				return new ResponseSuccess('Message added. To remove, send: DELETE '+id);
+				try {
+					const query = 'INSERT INTO messages (id,sender,recipient,message,created,show) VALUES (?,?,?,?,?,1)';
+					this.ctx.storage.sql.exec(query, id, sender, recipient, message, created);
+					const object = { id, sender, recipient, message, created };
+					this.broadcast('add', object);
+					return new ResponseSuccess('Message added. To remove, send: DELETE '+id);
+				} catch (error) {
+					const idConflict = error.message.includes('SQLITE_CONSTRAINT');
+					if (idConflict) {
+						console.log('Duplicate message ID received: '+id);
+						return new ResponseSuccess('Message already received (Duplicate)');
+					}
+					throw error;
+				}
 			}
 		} catch (error) {
-			throw new ResponseError(404,'Bad data: '+url.pathname);
+			console.error(error);
+			throw new ResponseError(500,'Server error: '+error.message);
 		}
 	}
 	broadcast(action,data) {
@@ -96,8 +108,8 @@ export class MyDurableObject extends DurableObject {
 			let query,statement,cursorList,result = [];
 			switch (data.action) {
 				case 'load':
-					query = 'SELECT id,sender,message,created FROM messages WHERE show = 1 ORDER BY created ASC LIMIT ?';
-					cursorList = this.ctx.storage.sql.exec(query, data.limit || 3);
+					query = 'SELECT id,sender,message,created FROM messages WHERE show = 1 ORDER BY created DESC LIMIT ?';
+					cursorList = this.ctx.storage.sql.exec(query, data.limit || 5);
 					result = [...cursorList];
 					break;
 				case 'list':
@@ -135,7 +147,7 @@ export class MyDurableObject extends DurableObject {
 		}
     }
     async webSocketClose(ws, code, reason, wasClean) {
-        // Cleanup if necessary
+		// unused
 	}
 }
 
