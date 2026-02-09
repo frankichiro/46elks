@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>46elks API test</title>
+		<link rel="icon" type="image/svg+xml" href="graphics/favicon.svg">
+		<link rel="stylesheet" href="index.css">
+		<script src="index.js" defer charset="utf-8"></script>
+	</head>
+	<body>
+		<header>
+			<div class="introduction">
+				<h1>Elktalk</h1>
+				<p>Hej, jag är en talande älg. Skicka ett SMS till mig på +46766867475 så säger jag det!</p>
+			</div>
+			<div class="button">
+				<button id="about" type="button" name="button">Va?</button>
+			</div>
+		</header>
+		<main>
+			<canvas id="canvas" width="1920" height="720"></canvas>
+		</main>
+		<footer>
+			<p>(<a href="https://46elks.se/" target="_blank">46elks</a> API test)</p>
+		</footer>
+		<dialog id="dialog">
+			<header>
+				<h1>Vaärehär?</h1>
+				<button id="close" type="button" name="close">Stäng</button>
+			</header>
+			<section>
+				<p>Denna sida är gjord av <a href="https://www.frankoddbratt.com/" target="_blank">Frank</a> för att testa 46elks API, och förhoppningsvis fungera som en intressant spontanansökan för någon form av jobb eller praktik eller liten arbetsuppgift på 46elks. Det verkar vara en fantastisk arbetsplats och jag jag är i stort behov av något fantastiskt i livet just nu!</p>
+				<p>Sidan använder Cloudflares Durable Objects och lite SQL för att komma ihåg saker och en WebSocket för att koppla ihop backend med frontend, samt JavaScript Canvas för att få saker att röra på sig. Den animerade texten består av typ 800 små prickar som följer SVG kurvor, och jag har skrivit 1380 ettor och nollor för hand i olika mönster för att skapa bokstäverna.</p>
+				<p>Jag använder AI för att ställa frågor och hitta buggar, men jag tycker om att programmera själv och vill lära mig istället för att bara slippa göra saker, så jag är bekant med varenda rad kod i hela projektet.</p>
+				<p>Sidan är baserad på en idé jag har om att göra en form av konstverk med LED-slingor för en festförening jag är medlem i, och låta besökare skicka SMS som sedan går i en loop runt hela lokalen. Jag har inte råd med så många adresserbara LED-slingor just nu dock, så det får bli ett framtida projekt.</p>
+				<p>Den fulla koden för sidan finns tillgänglig på Github för den som är intresserad: <a href="https://github.com/frankichiro/46elks" target="_blank">frankichiro/46elks</a>.</p>
+				<p>Jag har 20+ års erfarenhet av webbutveckling och min inriktning är full-stack appar baserade på Cloudflare. Jag pysslar även med design, skriver saker, och leker med Arduino och Raspberry Pi när jag har tid. Jag har även bakgrund inom event och evenemang, både som arrangör och utställare. Man kan använda mig till mycket.</p>
+				<p>Kontakta mig gärna på <a href="mailto:frank@frankoddbratt.com">frank@frankoddbratt.com</a> eller 0768696532 för att prata med mig!</p>
+				<hr>
+				<form>
+					<label>
+						<span>Admin:</span>
+						<input type="text" name="data">
+					</label>
+					<button id="admin" type="submit">Logga in</button>
+				</form>
+			</section>
+		</dialog>
+	</body>
+</html>
