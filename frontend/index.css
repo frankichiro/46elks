@@ -1,16 +1,27 @@
+/*
+* Prefixed by https://autoprefixer.github.io
+* PostCSS: v8.4.14,
+* Autoprefixer: v10.4.7
+* Browsers: last 4 version
+*/
+
 
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
 
 * {
-	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	        box-sizing: border-box;
 }
 
 body {
 	position: absolute;
 	width: 100vw;
 	height: 100vh;
+	display: -ms-grid;
 	display: grid;
+	-ms-grid-columns: 1fr;
 	grid-template-columns: 1fr;
+	-ms-grid-rows: auto 16px auto 16px 1fr;
 	grid-template-rows: auto auto 1fr;
 	grid-column-gap: 0px;
 	grid-row-gap: 0px;
@@ -30,10 +41,17 @@ body {
 		color: #656da9;
 	}
 	& header {
-		padding: 16px;
+		display: -webkit-box;
+		display: -ms-flexbox;
 		display: flex;
-        justify-content: space-between;
-        align-items: center;
+        -webkit-box-pack: justify;
+            -ms-flex-pack: justify;
+                justify-content: space-between;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+		gap: 16px;
+		padding: 16px;
 		& h1 {
 			font-weight: 900;
 			font-size: 2em;
@@ -74,31 +92,83 @@ body {
 
 	}
 	& footer {
+		display: -webkit-box;
+		display: -ms-flexbox;
 		display: flex;
-        justify-content: center;
-        align-items: center;
+        -webkit-box-pack: center;
+            -ms-flex-pack: center;
+                justify-content: center;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
 	}
 	& dialog[open] {
+		display: -webkit-box;
+		display: -ms-flexbox;
 		display: flex;
-		flex-direction: column;
+		-webkit-box-orient: vertical;
+		-webkit-box-direction: normal;
+		    -ms-flex-direction: column;
+		        flex-direction: column;
 		max-width: 640px;
 		border-radius: 16px;
 		padding: 0;
+		width: 95%;
+        max-height: 95%;
+
+		&::-webkit-backdrop {
+			-webkit-backdrop-filter: blur(8px);
+			        backdrop-filter: blur(8px);
+			background-color: #ffffff66;
+		}
 
 		&::backdrop {
-			backdrop-filter: blur(8px);
+			-webkit-backdrop-filter: blur(8px);
+			        backdrop-filter: blur(8px);
 			background-color: #ffffff66;
 		}
 		& header {
 			border-bottom: 1px solid #000000;
+			line-height: 1;
 		}
 		& section {
-			flex: 1;
+			-webkit-box-flex: 1;
+			    -ms-flex: 1;
+			        flex: 1;
 			overflow: auto;
 			padding: 16px;
 		}
 		& form {
 			text-align: center;
+		}
+	}
+}
+
+body > *:nth-child(1) {
+	-ms-grid-row: 1;
+	-ms-grid-column: 1
+}
+
+body > *:nth-child(2) {
+	-ms-grid-row: 3;
+	-ms-grid-column: 1
+}
+
+body > *:nth-child(3) {
+	-ms-grid-row: 5;
+	-ms-grid-column: 1
+}
+
+@media only screen and (max-width: 480px) {
+	body {
+		& header {
+			-webkit-box-orient: vertical;
+			-webkit-box-direction: normal;
+			    -ms-flex-direction: column;
+			        flex-direction: column;
+		}
+		& main {
+			padding: 32px 0;
 		}
 	}
 }

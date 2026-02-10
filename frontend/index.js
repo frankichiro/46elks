@@ -4,14 +4,16 @@ const Index = new class {
 	#elements = {};
 	#letters;
 	#stripPositions;
-	#stripOffsets = [-2,0,0,0,0,-1];
+	#stripOffsets = [-1,0,0,0,0,-1];
 	#lineArrays;
 	#spriteCanvas;
 	#play = true;
 	#scrollOffset = 0;
 	#frameCount = 0;
-	#ledsPerStrip = 144;
+	#ledsPerStrip = 100;
 	#ledLines = 6;
+	#scrollDelay = 3;
+	#dotSize = 6;
 	#animationFrameId = null;
 	#eyeState = {
 		x: 1520,
@@ -133,20 +135,19 @@ const Index = new class {
 	}
 	drawLetters() {
 
-		const x = 10;
-		const spriteSize = x*4;
+		const dotSize = this.#dotSize*4;
 
 		this.#spriteCanvas = document.createElement('canvas');
-		this.#spriteCanvas.width = spriteSize;
-		this.#spriteCanvas.height = spriteSize;
+		this.#spriteCanvas.width = dotSize;
+		this.#spriteCanvas.height = dotSize;
 		const sCtx = this.#spriteCanvas.getContext('2d');
 
-		const center = spriteSize / 2;
-		sCtx.shadowColor = '#ffffff'; // Cyan Glow
+		const center = dotSize / 2;
+		sCtx.shadowColor = '#ffffff';
 		sCtx.shadowBlur = 8;
-		sCtx.fillStyle = '#ffffff';   // White-ish core
+		sCtx.fillStyle = '#ffffff';
 		sCtx.beginPath();
-		sCtx.arc(center, center, x/2, 0, Math.PI*2);
+		sCtx.arc(center, center, this.#dotSize/2, 0, Math.PI*2);
 		sCtx.fill();
 
 		const lines = [
@@ -183,7 +184,6 @@ const Index = new class {
 
 		const canvas = this.#elements.canvas;
 		const context = canvas.getContext('2d');
-		const SCROLL_SPEED_DIVIDER = 2;
 
 		if (this.#animationFrameId) {
             cancelAnimationFrame(this.#animationFrameId);
@@ -194,7 +194,7 @@ const Index = new class {
 
 			if (this.#play) {
                 this.#frameCount++;
-                if (this.#frameCount % SCROLL_SPEED_DIVIDER === 0) {
+				if (this.#frameCount % this.#scrollDelay === 0) {
                     this.#scrollOffset++;
                 }
             }
