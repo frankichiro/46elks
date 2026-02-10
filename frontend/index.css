@@ -40,17 +40,24 @@ body {
 	& a {
 		color: #656da9;
 	}
+	& button {
+		background-color: #4c54df;
+		color: #ffffff;
+		border: 0;
+		border-radius: 100px;
+		height: 45px;
+		padding: 0 32px;
+		cursor: pointer;
+		font-family: 'Lato', sans-serif;
+		font-weight: 600;
+		font-style: normal;
+		font-size: 1.1em;
+
+		&:hover {
+			background-color: #2426c7;
+		}
+	}
 	& header {
-		display: -webkit-box;
-		display: -ms-flexbox;
-		display: flex;
-        -webkit-box-pack: justify;
-            -ms-flex-pack: justify;
-                justify-content: space-between;
-        -webkit-box-align: center;
-            -ms-flex-align: center;
-                align-items: center;
-		gap: 16px;
 		padding: 16px;
 		& h1 {
 			font-weight: 900;
@@ -60,22 +67,7 @@ body {
 		& p {
 			margin: 0;
 		}
-		& button {
-			background-color: #4c54df;
-			color: #ffffff;
-			border: 0;
-			border-radius: 100px;
-			height: 45px;
-			padding: 0 32px;
-			cursor: pointer;
-			font-family: 'Lato', sans-serif;
-			font-weight: 600;
-			font-style: normal;
-			font-size: 1.1em;
-			&:hover {
-				background-color: #2426c7;
-			}
-		}
+
 	}
 	& main {
 		position: relative;
@@ -110,11 +102,12 @@ body {
 		-webkit-box-direction: normal;
 		    -ms-flex-direction: column;
 		        flex-direction: column;
-		max-width: 640px;
 		border-radius: 16px;
 		padding: 0;
 		width: 95%;
-        max-height: 95%;
+		max-width: 640px;
+		height: 95%;
+		max-height: 640px;
 
 		&::-webkit-backdrop {
 			-webkit-backdrop-filter: blur(8px);
@@ -128,6 +121,11 @@ body {
 			background-color: #ffffff66;
 		}
 		& header {
+			display: -webkit-box;
+			display: -ms-flexbox;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
 			border-bottom: 1px solid #000000;
 			line-height: 1;
 		}
@@ -140,6 +138,7 @@ body {
 		}
 		& form {
 			text-align: center;
+			display: none;
 		}
 	}
 }
